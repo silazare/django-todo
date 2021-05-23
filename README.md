@@ -6,7 +6,7 @@ Application Docker image contains all migrations, including fake accounts creati
 ## Requirements
 
 - [Minikube](https://github.com/kubernetes/minikube) v1.20.0 or later
-- [Docker](https://docs.docker.com/get-docker)
+- [Docker](https://docs.docker.com/get-docker) 19.03.14 or later
 - [Helm](https://github.com/helm/helm) v3.2.x or later
 - [Helmfile](https://github.com/roboll/helmfile) v0.139.x or later
 - [helm-secrets](https://github.com/jkroepke/helm-secrets) v3.6.1 or later
@@ -26,7 +26,7 @@ helm plugin install https://github.com/jkroepke/helm-secrets --version v3.6.1
 
  * [app](./app) -- Application local files, Dockerfile and docker-compose.yml
  * [helm](./helm) -- Directory with Helm charts
-   * [django-todo](./django-todo) -- Helm chart for django-todo application
+   * [django-todo](./helm/django-todo) -- Helm chart for django-todo application
  * [manifests](./manifests) -- Initial K8s manifests for deployment
  * [helmfile.yaml](./helmfile.yaml) -- Helmfile for deployment
  * [secrets.yaml](./secrets.yaml) -- Secrets for Helmfile deployment
@@ -48,7 +48,7 @@ cd app
 docker build -t django-todo:1.0 .
 ```
 
-You can use already prepared image from [DockerHub](https://hub.docker.com/repository/docker/exciter86/django-todo)
+You can use already prepared image from [DockerHub](https://hub.docker.com/repository/docker/exciter86/django-todo)    
 By default it is already defined in django-todo Helm chart [values](./helm/django-todo/values.yaml)
 
 4) Start minikube cluster:
