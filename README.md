@@ -13,7 +13,7 @@ Application Docker image contains all migrations, including fake accounts creati
 - [Sops](https://github.com/mozilla/sops) 3.7.1 or later
 - [GnuPG](https://gnupg.org/download/index.html) 2.2.x or later
 
-Please follow the installation steps provided for each requirement tool.
+Please follow the installation steps provided for each requirement tool.    
 PGP key for secrets decryption should be provided separately and apart from this repository.
 
 Example requirements installation for MacOS:

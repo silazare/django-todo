@@ -53,7 +53,7 @@ postgresqlDbName: postgres
 postgresqlHost: postgres
 postgresqlPort: 5432
 
-# Default secrets which must be overriden from values.yaml
+# Default secrets which should be overriden from values.yaml
 secretKey: secret
 postgresqlUsername: postgres
 postgresqlPassword: postgres

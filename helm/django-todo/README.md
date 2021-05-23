@@ -10,13 +10,13 @@ A Helm chart for django-todo demo application
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
-| image.pullPolicy | string | `"Always"` |  |
+| image.pullPolicy | string | `"IfNotPresent"` |  |
 | image.repository | string | `"exciter86/django-todo"` |  |
 | image.restartPolicy | string | `"Always"` |  |
 | image.tag | string | `"1.0"` |  |
 | ingress.annotations | object | `{}` |  |
 | ingress.create | bool | `true` |  |
-| initImage.pullPolicy | string | `"Always"` |  |
+| initImage.pullPolicy | string | `"IfNotPresent"` |  |
 | initImage.repository | string | `"postgres"` |  |
 | initImage.tag | string | `"12.7-alpine"` |  |
 | livenessProbe.failureThreshold | int | `6` |  |
@@ -26,9 +26,9 @@ A Helm chart for django-todo demo application
 | livenessProbe.timeoutSeconds | int | `5` |  |
 | postgresqlDbName | string | `"postgres"` |  |
 | postgresqlHost | string | `"postgres"` |  |
-| postgresqlPassword | string | `"superpostgres"` |  |
+| postgresqlPassword | string | `"postgres"` |  |
 | postgresqlPort | int | `5432` |  |
-| postgresqlUser | string | `"postgres"` |  |
+| postgresqlUsername | string | `"postgres"` |  |
 | readinessProbe.failureThreshold | int | `6` |  |
 | readinessProbe.initialDelaySeconds | int | `30` |  |
 | readinessProbe.periodSeconds | int | `10` |  |
@@ -39,7 +39,7 @@ A Helm chart for django-todo demo application
 | resources.limits.memory | string | `"500Mi"` |  |
 | resources.requests.cpu | string | `"200m"` |  |
 | resources.requests.memory | string | `"500Mi"` |  |
-| secretKey | string | `"lksdf98wrhkjs88dsf8-324ksdm"` |  |
+| secretKey | string | `"secret"` |  |
 | service.port | int | `8000` |  |
 | service.targetPort | int | `8000` |  |
 | service.type | string | `"ClusterIP"` |  |
