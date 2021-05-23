@@ -1,0 +1,59 @@
+---
+
+replicaCount: 2
+
+image:
+  repository: 'exciter86/django-todo'
+  tag: '1.0'
+  pullPolicy: IfNotPresent
+  restartPolicy: Always
+
+initImage:
+  repository: 'postgres'
+  tag: '12.7-alpine'
+  pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+  port: 8000
+  targetPort: 8000
+
+resources:
+  requests:
+    cpu: 200m
+    memory: 500Mi
+  limits:
+    cpu: 200m
+    memory: 500Mi
+
+# Option to create a Service Account for future usage
+serviceAccount:
+  create: true
+
+# Option to create a simple NGINX Ingress
+ingress:
+  create: true
+  annotations: {}
+
+livenessProbe:
+  initialDelaySeconds: 30
+  periodSeconds: 10
+  timeoutSeconds: 5
+  failureThreshold: 6
+  successThreshold: 1
+
+readinessProbe:
+  initialDelaySeconds: 30
+  periodSeconds: 10
+  timeoutSeconds: 5
+  failureThreshold: 6
+  successThreshold: 1
+
+postgresqlDbName: postgres
+postgresqlHost: postgres
+postgresqlPort: 5432
+
+# Default secrets which must be overriden from values.yaml
+secretKey: secret
+postgresqlUsername: postgres
+postgresqlPassword: postgres

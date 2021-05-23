@@ -1,0 +1,15 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: django-todo
+  labels:
+    app: django-todo
+spec:
+  type: ClusterIP
+  selector:
+    app: django-todo
+  ports:
+    - port: 8000
+      targetPort: 8000
+      protocol: TCP

@@ -1,0 +1,50 @@
+version: "3"
+
+services:
+
+  django_todo:
+    build:
+      context: .
+    container_name: django-todo
+    image: django-todo:1.0
+    restart: on-failure
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      POSTGRES_DB: ${POSTGRES_DB:-postgres}
+      POSTGRES_HOST: ${POSTGRES_HOST:-postgres}
+      POSTGRES_PORT: ${POSTGRES_PORT:-5432}
+      SECRET_KEY: ${SECRET_KEY:-'lksdf98wrhkjs88dsf8-324ksdm'}
+    ports:
+      - "8000:8000"
+    networks:
+      - backend
+    depends_on:
+      - postgres
+
+  postgres:
+    container_name: postgres
+    image: postgres:${POSTGRES_VERSION:-12.7}
+    restart: on-failure
+    environment:
+        POSTGRES_USER: ${POSTGRES_USER:-postgres}
+        POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+        POSTGRES_DB: ${POSTGRES_DB:-postgres}
+        PGUSER: ${PGUSER:-postgres}
+    volumes:
+        - pgdata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - backend
+
+networks:
+  backend:
+    ipam:
+      driver: default
+      config:
+        - subnet: ${BACKEND_SUBNET:-172.16.100.0/24}
+
+volumes:
+  pgdata:
+    driver: local

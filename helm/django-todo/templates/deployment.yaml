@@ -1,0 +1,101 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "django-todo.fullname" . }}
+  namespace: {{ template "django-todo.namespace" . }}
+  labels: {{ include "django-todo.labels" . | indent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  strategy:
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      app: {{ template "django-todo.name" . }}
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels: {{ include "django-todo.labels" . | indent 8 }}
+    spec:
+      terminationGracePeriodSeconds: 40
+      initContainers:
+      - name: wait-postgres
+        image: "{{ .Values.initImage.repository }}:{{ .Values.initImage.tag }}"
+        imagePullPolicy: {{ .Values.initImage.pullPolicy }}
+        command:
+        - sh
+        - -ec
+        - |
+          until (pg_isready -h {{ .Values.postgresqlHost }} -p 5432 -U postgres); do
+            sleep 1
+          done
+        resources:
+          requests:
+            cpu: 50m
+            memory: 50Mi
+          limits:
+            cpu: 50m
+            memory: 50Mi
+      containers:
+      - name: django-todo
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        env:
+          - name: POSTGRES_DB
+            value: {{ .Values.postgresqlDbName | quote }}
+          - name: POSTGRES_HOST
+            value: {{ .Values.postgresqlHost | quote }}
+          - name: POSTGRES_PORT
+            value: {{ .Values.postgresqlPort | quote }}
+          - name: SECRET_KEY
+            valueFrom:
+              secretKeyRef:
+                name: {{ template "django-todo.fullname" . }}-secret
+                key: SECRET_KEY
+          - name: POSTGRES_USER
+            valueFrom:
+              secretKeyRef:
+                name: {{ template "django-todo.fullname" . }}-secret
+                key: POSTGRES_USER
+          - name: POSTGRES_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: {{ template "django-todo.fullname" . }}-secret
+                key: POSTGRES_PASSWORD
+        ports:
+          - name: http
+            containerPort: 8000
+        livenessProbe:
+          httpGet:
+            path: /
+            port: http
+          initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
+          timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
+          failureThreshold: {{ .Values.livenessProbe.failureThreshold }}
+          successThreshold: {{ .Values.livenessProbe.successThreshold }}
+        readinessProbe:
+          httpGet:
+            path: /
+            port: http
+          initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
+          timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
+          failureThreshold: {{ .Values.readinessProbe.failureThreshold }}
+          successThreshold: {{ .Values.readinessProbe.successThreshold }}
+        {{- with .Values.resources }}
+        resources:
+          {{- toYaml . | nindent 10 }}
+        {{- end }}
+      restartPolicy: {{ .Values.image.restartPolicy }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
